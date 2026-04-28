@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage{graphicx} 
+\usepackage[hidelinks]{hyperref}
+
+\title{\fontsize{19}{10}\textbf{Messaging Application – A project report}}
+
+\author{\textbf{Abdullah Mohammad Aref}}
+\date{\textbf{July 2025}}
+
+\begin{document}
+
+\maketitle
+
+\begin{flushleft}
+    
+    \textbf{Demonstration video:}
+    \url{https://youtu.be/OjKrU9_MJPE}
+    
+    
+    \textbf{Project Repository:}
+    \url{https://github.com/Abdullahmohammadaref/messaging_application}
+    
+\end{flushleft}
+
+\tableofcontents
+
+\section{Introduction}
+
+This client-server messaging application purpose is to allow users on the same network connection to instantly send and receive text and file messages in real-time. The application comes with an interface that allow users to easily perform actions like registration, login, managing contacts, and sending messages.
+
+\section{requirements}
+
+This application runs on Python 3.12, so the following version should be installed. Then clone the project GitHub repository by running "git clone https://github.com/user/project.git" in the terminal. Finally, run "py server.py" first, then run "py client.py ". To run more than one client that can communicate with each other, simply run "py client.py" in a separate terminal window each time you want to run an additional client.
+
+
+To have two separate client machines that are communicating on the same network, you will have to follow the steps above on both machines, but the last step is to open the project using an IDE and navigate to the client.py file. In the init function in the client class, the self. The server\_ip variable should be changed to the private IP address of the machine that will be running the server.py file. To find this private IP address, simply open the command prompt in the machine that will run server.py, then run "ipconfig". Depending on whether the machine is using WiFi or Ethernet, the private IP address will be displayed under the "Default Gateway" option. Then In the final step, one machine should run the server.py file. Alternatively, there can be 3 machines running, one running server.py file and the others running the client.py file. Finally, it is worth mentioning that running the server.py file on a machine will, by default, create a database file and a folder (that will store all the media) if they don't exist. This also means that if server.py was running on one device, then for some reason, the administrator decided to run server.py on another server instead, the "files" folder and the database file should be transferred to the other device and put in the same directory as the server.py file.
+
+\section{Usage and design}
+
+Completing the requirements successfully will result in a server that is connected to one or multiple clients that can communicate together. Each client has a GUI loaded to make the application more interactive. By default, the user will start on the Login or register page, where they can choose to log in to an existing account or register a new account.
+
+In the registration page, the user can enter the username and password that he wants to register and click submit.  If a user with the same username exists, then an error message will display; otherwise, the user will be registered, and the client will be redirected to the previous login or register page with a success message.
+
+Similarly, the login page will ask the user to input his account username and password, and if the credentials are valid, he will be logged in and redirected to the contacts page. otherwise and error message will display. After login a file with the naming format of "<username>\_files" will be created automatically. This file will be used to store all received files.
+
+In the contacts page, the user can either search for another user name (searching for the same username of the logged-in user will throw an error message) or click on the name of one of his contacts. After performing any of these actions, the program will check if the username exists and then redirect the user to the contact page. If no user with the entered username is found, then an error message will appear.
+
+Finally, on the contact page, the user will see the name of the contact user. Most importantly, all messages between those users will be displayed, each in a different color to enhance the UI. These messages show the username of the sender, the message (either a text or the name of a file), and the time the message was sent. Finally, in the end, there are options to send a text message and a file message. Sending a file message requires the user to enter the absolute path of the file.
+
+\section{Protocol specifications and network communication workflow}
+
+The Protocol used for message exchange between the server and the client is TCP protocol because it is the most suitable for this type of application, as TCP can ensure that the data transmitted will never be lost. Also, if one packet is lost, then the receiver server can simply ask the server to send that message again. On the other hand, using the UDP protocol instead is not ideal as messages are allowed to be lost during transmission, which can lead to missing messages and corrupt files.
+
+Every button click on the GUI calls a function that sends a message that starts with the type or request the client wants from the server; this message can also contain other related information that is separated by a special separator character. Sometimes this message informs the server about an upcoming message, a function will run in the server, and be ready to receive the anticipated message. The same process goes when a server wants to send a message or request information to the client.
+
+Clients can send string and file messages, while the server can send strings, files, tables (a list of dictionaries in JSON format), and lists (In JSON format). All of these messages (except files, as they are already in byte format) are encoded in UTF-8 format before sending and decoded after being received. For string messages, first the length of the string is sent in bytes, so the server can know the size of the next upcoming message. Then the actual string is sent. On the other hand, file messages are sent in chunks no more than 4098 bytes long, and the receiver keeps receiving those chunks and writing them. When the file is fully sent, the receiver loop stops automatically as the condition of received packets being smaller than the file size will not be met anymore to continue the loop. Finally, lists and tables are sent and received in the same way as files, but the loop doesn't stop automatically because the size of the full message was not given to the receiver. To solve this issue, the server sends a byte tag b<DONE> that tells the receiver to stop receiving packets. This prevents the receiver code from being stuck in an infinite loop.
+
+\section{Strengths, and future improvements}
+
+This application allows two computer devices to easily send messages and files to each other over a local network and solves the problem of computers having to exchange information via external storage like external hard drives, USB sticks, and DVDs.
+
+This application can be improved by enhancing the UI appearance. Also, allowing users to communicate across multiple networks will be more convenient for users. Additionally, the application can be updated to meet security standards with the use of hashing, salting, encryption, 2 factor authentication, etc.
+
+\section{Conclusion}
+ 
+In conclusion, this implementation of the communication workflow, along with the UI design, has come together to create a reliable and lightweight messaging application that allows users to send messages quickly in real time.
+
+
+\end{document}
